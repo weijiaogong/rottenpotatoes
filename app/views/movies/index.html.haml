@@ -2,7 +2,7 @@
 %h1 All Movies 
 = form_tag movies_path, id: :ratings_form, method: :get do 
   Include:
-  =hidden_field_tag 'column', get_column
+  =hidden_field_tag 'column', @column
   - @all_ratings.each do |rating, active|
     = rating
     = check_box_tag "ratings[#{rating}]", 'true', active, id: 'ratings_#{rating}'

@@ -11,8 +11,9 @@ class MoviesController < ApplicationController
 ##########################################################################
 # return movies with selected ratings  #
 ##########################################################################
-  def get_filtered_movies(ratings)
+  def get_filtered_movies
 
+    ratings = params[:ratings]
     # update ratings stored in session if new ratings are selected
     if  ratings
         session[:before_filter] = ratings
@@ -32,8 +33,9 @@ class MoviesController < ApplicationController
 ##########################################################################
 # order movies by specified column  #
 ##########################################################################
-   def get_ordered_movies(column)
+   def get_ordered_movies
 
+    column = params[:column]
     # update the column used for sorting stored in session
     if column
        session[:before_sortby] = column unless column.empty?
@@ -72,9 +74,9 @@ class MoviesController < ApplicationController
 ##########################################################################
   def index
 
-    get_filtered_movies(params[:ratings])
+    get_filtered_movies
 
-    get_ordered_movies(params[:column])
+    get_ordered_movies
 
     get_setting
   end
