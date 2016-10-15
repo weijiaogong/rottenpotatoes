@@ -43,7 +43,12 @@ class MoviesController < ApplicationController
     
     # order movies by specified column
     if session[:before_sortby]
-       @movies = @movies.order("lower(#{session[:before_sortby]})" + " asc")
+       if  session[:before_sortby] == 'title'
+           @movies = @movies.order("lower(#{session[:before_sortby]})" + " ASC")
+       elsif  session[:before_sortby] == 'release_date'
+           @movies = @movies.order(session[:before_sortby] + " ASC")
+       end
+      
     end
    end
 
