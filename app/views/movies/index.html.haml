@@ -2,18 +2,18 @@
 %h1 All Movies 
 = form_tag movies_path, id: :ratings_form, method: :get do 
   Include:
-  =hidden_field_tag 'column', @column
-  - @all_ratings.each do |rating, active|
+  =hidden_field_tag 'sortby', @sortby
+  - @all_ratings.each do |rating|
     = rating
-    = check_box_tag "ratings[#{rating}]", 'true', active, id: 'ratings_#{rating}'
+    = check_box_tag "ratings[#{rating}]", '1', @filter.key?(rating), id: 'ratings_#{rating}'
   = submit_tag 'Refresh', id: :ratings_submit
   
 %table#movies
   %thead
     %tr
-      %th{class: if_sortby('title')}= link_to  'Movie Title',id: :title_header, column: :title, ratings: get_ratings
+      %th{class: if_sortby('title')}= link_to  'Movie Title',id: :title_header, sortby: :title, ratings: @filter
       %th Rating
-      %th{class: if_sortby('release_date')}= link_to 'Release Date', id: :release_date_header, column: :release_date, ratings: get_ratings
+      %th{class: if_sortby('release_date')}= link_to 'Release Date', id: :release_date_header, sortby: :release_date, ratings: @filter
       %th More Info
   %tbody
     - @movies.each do |movie|

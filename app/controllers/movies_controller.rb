@@ -9,46 +9,45 @@ class MoviesController < ApplicationController
   
 
 ##########################################################################
-# return movies with selected ratings  #
+# update filter and sortby in session #
 ##########################################################################
-  def get_filtered_movies
+   def update_session
 
-    ratings = params[:ratings]
-    # update ratings stored in session if new ratings are selected
-    if  ratings
-        session[:before_filter] = ratings
-    end
+       ratings = params[:ratings] || {}
+       # update ratings stored in session if new ratings are selected
+       session[:before_ratings] = ratings unless ratings.empty?
 
-
-    # get movies from model with selected ratings
-    if session[:before_filter]
-       @movies = Movie.filter(session[:before_filter])
-    else
-       @movies = Movie.all
-    end
-
+	sortby = params[:sortby] || ""
+	# update the column used for sorting stored in session
+	session[:before_sortby] = sortby unless sortby.empty?
+   
    end
 
 
-##########################################################################
-# order movies by specified column  #
-##########################################################################
-   def get_ordered_movies
 
-    column = params[:column]
-    # update the column used for sorting stored in session
-    if column
-       session[:before_sortby] = column unless column.empty?
+##########################################################################
+# construct filter parameter for Movie Model #
+##########################################################################
+   def get_filter
+    # order movies by specified column
+    if session[:before_ratings]
+       filter = session[:before_ratings].keys
     end
-    
+   end
+
+
+
+##########################################################################
+# construct order parameter for Movie Model #
+##########################################################################
+   def get_order
     # order movies by specified column
     if session[:before_sortby]
        if  session[:before_sortby] == 'title'
-           @movies = @movies.order("lower(#{session[:before_sortby]})" + " ASC")
+           order = "lower(#{session[:before_sortby]})" + " ASC"
        elsif  session[:before_sortby] == 'release_date'
-           @movies = @movies.order(session[:before_sortby] + " ASC")
+           order = session[:before_sortby] + " ASC"
        end
-      
     end
    end
 
@@ -56,20 +55,13 @@ class MoviesController < ApplicationController
 ##########################################################################
 # set variables of ratings and column used in view  #
 ##########################################################################
-   def get_setting
+   def set_setting
 
     # @all_ratings helps show the status of check_box of ratings
-    @all_ratings = {'G' => false, 'PG' => false, 'PG-13' => false, 'R' => false}
-
-    # update @all_ratings
-    if session[:before_filter]
-       session[:before_filter].each do |rating, active|
-         @all_ratings[rating] = true
-       end    
-    end
-
-    # @column helps highlight the specific column by which the movies are ordered
-    @column = session[:before_sortby]
+    @all_ratings = Movie.all_ratings
+    @filter = session[:before_ratings] || {}
+    # @sortby helps highlight the specific column by which the movies are ordered
+    @sortby = session[:before_sortby]
 
    end
 
@@ -79,11 +71,29 @@ class MoviesController < ApplicationController
 ##########################################################################
   def index
 
-    get_filtered_movies
+    update_session
+    set_setting
 
-    get_ordered_movies
+    #  add filter and sortby parameters into Url if they are not added yet#
 
-    get_setting
+    #params[:sortby] is nil and session[:before_sortby] is not, otherwise
+    #either session[:before_sortby] and params[:sortby] are both nil
+    #or params[:sortby] is setted by user
+    if params[:sortby] != session[:before_sortby]
+          flash.keep
+          redirect_to :sortby => session[:before_sortby], :ratings => session[:before_ratings] and return
+     end
+
+
+     #params[:ratings] is nil and session[:before_ratings] is not 
+     if params[:ratings] != session[:before_ratings]
+          flash.keep
+          redirect_to :sortby => session[:before_sortby], :ratings => session[:before_ratings] and return
+    end
+
+    @movies = Movie.filter_and_order(get_filter, get_order )
+
+    
   end
 
 ##########################################################################
@@ -98,14 +108,16 @@ class MoviesController < ApplicationController
 # add new movie #
 ##########################################################################
   def create
-    @movie = Movie.create!(movie_params)
+     begin
+           @movie = Movie.create!(movie_params)
 
-    p = Hash.new
-    p[:ratings] = session[:before_filter]
-    p[:column]  = session[:before_sortby]
+	    flash[:notice] = "#{@movie.title} was successfully created."
+	    redirect_to movies_path
 
-    flash[:notice] = "#{@movie.title} was successfully created."
-    redirect_to movies_path(p)
+     rescue ActiveRecord::RecordInvalid => invalid
+          flash[:notice] = invalid
+          render 'new'
+     end
   end
 
 ##########################################################################
@@ -116,8 +128,7 @@ class MoviesController < ApplicationController
     id = params[:id] # retrieve movie ID from URI route
     @movie = Movie.find(id) # look up movie by unique ID
     # will render app/views/movies/show.<extension> by default
-    get_setting
-  
+    set_setting
     flash[:notice] = "#{@movie.title} was successfully created."
   end
 
@@ -149,12 +160,7 @@ class MoviesController < ApplicationController
   def destroy
     @movie = Movie.find(params[:id])
     @movie.destroy
-
-    p = Hash.new
-    p[:ratings] = session[:before_filter]
-    p[:column]  = session[:before_sortby]
-
     flash[:notice] = "Movie '#{@movie.title}' deleted."
-    redirect_to movies_path(p)
+    redirect_to movies_path
   end
 end
