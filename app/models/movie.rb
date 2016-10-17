@@ -4,7 +4,7 @@ class Movie < ActiveRecord::Base
         validates_uniqueness_of :title, case_sensitive: false, scope: [:rating, :release_date]
 
 	def self.all_ratings
-            ['G', 'PG', 'PG-13','R']
+            ['G', 'PG', 'PG-13','NC-17','R']
         end
 
         def self.filter_and_order(filter, order)
