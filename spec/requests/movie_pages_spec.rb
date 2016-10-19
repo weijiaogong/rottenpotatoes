@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "MoviePages", type: :request do
+RSpec.describe "MoviePages" do
   subject {page}
 
   describe "Details Page" do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe "static pages", type: :request do
+describe "static pages" do
 
   subject {page}
 

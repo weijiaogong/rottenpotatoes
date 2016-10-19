@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe "Movies", type: :model do
+describe "Movies" do
 	let(:movie) { FactoryGirl.build(:movie) }
         subject{movie}
 	it { should respond_to(:title) }

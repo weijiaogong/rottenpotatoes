@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe "index page", type: :request do
+describe "index page" do
 
   subject {page}
 
