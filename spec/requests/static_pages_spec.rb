@@ -39,4 +39,12 @@ describe "static pages" do
      it_should_behave_like "all static pages"
 
   end
+  describe "similar page" do
+    let(:heading) {"Similar Movies"}
+     before do 
+        visit movie_similar_path(movie)
+     end
+     it_should_behave_like "all static pages"
+  end
+
 end

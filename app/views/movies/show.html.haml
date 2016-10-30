@@ -4,6 +4,9 @@
 
 %ul#details
   %li
+    Director:
+    = @movie.director
+  %li
     Rating:
     = @movie.rating
   %li
@@ -17,4 +20,24 @@
 = link_to 'Edit', edit_movie_path(@movie)
 = button_to 'Delete', movie_path(@movie), :method => :delete, :confirm => 'Are you sure?'
 = link_to 'Back to movie list', movies_path
+%p
+= link_to 'Find Movies With Same Director', movie_similar_path(@movie), :method => :get, :action => :similar
 
+- if @similar
+  %h1 Similar Movies 
+  %table#movies
+    %thead
+      %tr
+        %th title
+        %th Director  
+        %th Rating
+        %th Release Date
+        %th More Info
+    %tbody
+      - @movies.each do |movie|
+        %tr
+          %td= movie.title
+          %td= movie.director
+          %td= movie.rating
+          %td= movie.release_date
+          %td= link_to "More about #{movie.title}", movie_path(movie)

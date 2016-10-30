@@ -11,15 +11,17 @@
 %table#movies
   %thead
     %tr
-      %th{class: if_sortby('title')}= link_to  'Movie Title',id: :title_header, sortby: :title, ratings: @filter
+      %th{class: if_sortby('title')}= link_to  'Movie Title',id: :title_header, sortby: :title, ratings: @filter	
       %th Rating
+      %th Director
       %th{class: if_sortby('release_date')}= link_to 'Release Date', id: :release_date_header, sortby: :release_date, ratings: @filter
       %th More Info
   %tbody
     - @movies.each do |movie|
       %tr
-        %td= movie.title 
+        %td= movie.title
         %td= movie.rating
+        %td= movie.director
         %td= movie.release_date
         %td= link_to "More about #{movie.title}", movie_path(movie)
 
