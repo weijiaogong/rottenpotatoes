@@ -24,7 +24,7 @@ production:
   adapter: postgresql
   pool: 5
   timeout: 5000
-  database: db/production.pg
+  database: movies_production
 
 cucumber:
   <<: *test
