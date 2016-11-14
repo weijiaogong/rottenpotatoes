@@ -11,7 +11,7 @@ Given(/^I am on the home page$/) do
   visit movies_path
 end
 
-Then(/^the movies are order by "(.*?)":$/) do |arg1, table|
+Then(/^I should see movies(.*)$/) do |arg1, table|
    show_table = page.all('table tbody tr').map do |row|
       row.first('td').text
    end
@@ -77,15 +77,6 @@ Then(/^I should be on the details page for "(.*?)"$/) do |title|
 
 end
 
-Then(/^I should see movies "(.*?)" and "(.*?)"$/) do |arg1, arg2|
-  show_table = page.all('table tbody tr').map do |row|
-    row.all('td').map do |cell|
-      cell.text
-    end
-  end
-  expect(show_table[0][0]).to eq arg1
-  expect(show_table[1][0]).to eq arg2
-end
 
 Then(/^I should not see "(.*?)" in the table of movies$/) do |arg1|
   expect(page).to have_content(arg1, count: 1)

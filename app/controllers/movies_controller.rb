@@ -63,11 +63,13 @@ class MoviesController < ApplicationController
           flash.keep
           redirect_to :sortby => session[:before_sortby], :ratings => session[:before_ratings] and return
      end
-     #params[:ratings] is nil and session[:before_ratings] is not 
+     #params[:ratings] is nil and session[:before_ratings] is not
+
     if params[:ratings] != session[:before_ratings]
           flash.keep
           redirect_to :sortby => session[:before_sortby], :ratings => session[:before_ratings] and return
     end
+   
     @movies = Movie.filter_and_order(get_filter, get_order )
   end
 

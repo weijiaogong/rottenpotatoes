@@ -18,13 +18,16 @@ Scenario: filter movies by ratings
   Given I am on the home page
   And  I check "ratings[PG]"
   And  I press "Refresh"
-  Then I should see movies "Star Wars" and "Blade Runner"
+  Then I should see movies
+  |title       |
+  |Star Wars   |
+  |Blade Runner|
 
 
 Scenario: sort movies by title
   Given I am on the home page
   And  I follow "Movie Title"
-  Then the movies are order by "title":
+  Then I should see movies order by "title":
   |title       |
   |Alien       |
   |Blade Runner|
@@ -34,7 +37,7 @@ Scenario: sort movies by title
 Scenario: sort movies by release_date
   Given I am on the home page
   And  I follow "Release Date"
-  Then the movies are order by "release_date":
+  Then I should see movies order by "release_date":
   |title       |
   |THX-1138    |
   |Star Wars   |
@@ -49,11 +52,32 @@ Scenario: current setting of filter and sort is remembered:
   When I follow "More about Alien"
   Then I should be on the details page for "Alien"
   When I follow "Back to movie list"
-  Then the movies are order by "release_date":
+  Then I should see movies order by "release_date":
   |title       |
   |THX-1138    |
   |Alien       |
 
+
+Scenario: new setting of filter and sort will take effective:
+  Given I am on the home page
+  When  I check "ratings[R]"
+  And  I press "Refresh"
+  And  I follow "Release Date"
+  Then I should see movies order by "release_date":
+  |title       |
+  |THX-1138    |
+  |Alien       |
+  When  I follow "Movie Title"
+  Then I should see movies order by "title":
+  |title       |
+  |Alien       |
+  |THX-1138    |
+  When I uncheck "ratings[R]"
+  And  I press "Refresh"
+  Then I should see movies
+  |title       |
+  |Alien       |
+  |THX-1138    |
 
 Scenario: add a new movie
   Given I am on the home page

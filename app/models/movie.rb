@@ -18,6 +18,12 @@ class Movie < ActiveRecord::Base
 	end
 
     def self.find_similar_by_director(director)
-        Movie.where(director: director)
+        movies = Movie.where(director: director)
+        directors = director.split(/[,;]/)
+        directors.each do |dir|
+            dir = dir.gsub(/^ /,"")
+            movies = movies.or(where('director LIKE ?', '%' + dir + '%'))
+        end
+        return movies
     end
 end
