@@ -3,7 +3,7 @@ class MoviesController < ApplicationController
 # get new movies' information  from params  #
 ##########################################################################
   def movie_params
-    params.require(:movie).permit(:title, :rating, :description, :release_date,:director)
+    params.require(:movie).permit(:title, :director, :rating, :description, :release_date)
   end
 ##########################################################################
 # update filter and sortby in session #
