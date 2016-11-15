@@ -5,26 +5,27 @@
 #   gem 'sqlite3'
 #
 default: &default
-  adapter: sqlite3
+  adapter: postgresql
+  encoding: utf8
   pool: 5
   timeout: 5000
+  username: gwj
+  password:
 
 development:
   <<: *default
-  database: db/development.sqlite3
+  database: Rottenpotatoes_development
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test: &test
   <<: *default
-  database: db/test.sqlite3
+  database: Rottenpotatoes_test
 
 production:
-  adapter: postgresql
-  pool: 5
-  timeout: 5000
-  database: movies_production
+  <<: *default
+  database: Rottenpotatoes_production
 
 cucumber:
   <<: *test

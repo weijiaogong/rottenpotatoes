@@ -9,7 +9,6 @@ gem 'rails', '4.2.6'
 
 # for Heroku deployment - as described in Ap. A of ELLS book
 group :development, :test do
-  gem 'sqlite3'
   gem 'byebug'
   gem 'cucumber-rails', :require => false
   gem 'cucumber-rails-training-wheels'
@@ -18,12 +17,12 @@ group :development, :test do
   gem 'launchy'
   gem 'rspec-rails'
   gem 'simplecov'
+#  gem 'wherex'
 end
 group :production do
-  gem 'pg' # for Heroku deployment
   gem 'rails_12factor'
 end
-
+gem 'pg' # for Heroku deployment
 gem 'coffee-rails'
 # Gems used only for assets and not required
 # in production environments by default.
